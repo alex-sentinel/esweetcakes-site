@@ -1,0 +1,18 @@
+---
+import GalleryGrid from './GalleryGrid.astro';
+import cakes from '../data/cakes.json';
+import { getLang, ui } from '../i18n/ui';
+
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].galleryHome;
+const featured = cakes.filter((c) => c.featured);
+const galleryHref = lang === 'es' ? '/es/gallery' : '/gallery';
+---
+<section class="section wrap" id="gallery" aria-labelledby="gallery-title">
+  <h2 class="section__title" id="gallery-title">{t.title}</h2>
+  <p class="section__lede">{t.lede}</p>
+
+  <GalleryGrid cakes={featured} />
+
+  <a class="gallery__more" href={galleryHref}>{t.more} <span aria-hidden="true">&rarr;</span></a>
+</section>

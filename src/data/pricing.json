@@ -1,0 +1,9 @@
+{
+  "sizes": [
+    { "size": "6\" round", "servings": "8–10", "price": "$50", "priceVerified": true },
+    { "size": "8\" round", "servings": "14–18", "price": "$70", "priceVerified": true },
+    { "size": "10\" round", "servings": "24–30", "price": "$85", "priceVerified": true },
+    { "size": "Half sheet", "servings": "40–48", "price": "$120", "priceVerified": true },
+    { "size": "Full sheet", "servings": "80–96", "price": "$240", "priceVerified": true }
+  ]
+}

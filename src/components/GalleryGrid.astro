@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import { getLang, ui } from '../i18n/ui';
+
+interface Cake {
+  image: string;
+  alt: string;
+  occasion?: string;
+  flavor?: string;
+  notes?: string;
+}
+const { cakes } = Astro.props as { cakes: Cake[] };
+const lang = getLang(Astro.currentLocale);
+const occasions = ui[lang].occasions;
+
+// TODO: to add more photos later, drop them in src/assets/cakes/ and add an
+// entry to src/data/cakes.json with its filename, occasion, and real alt text.
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/cakes/*.{jpg,jpeg,png,webp}',
+  { eager: true },
+);
+const bySrc = new Map(
+  Object.entries(files).map(([path, mod]) => [path.split('/').pop(), mod.default]),
+);
+---
+<ul class="gallery__grid" role="list">
+  {cakes.map((cake) => {
+    const img = bySrc.get(cake.image);
+    const occasion = cake.occasion ? occasions[cake.occasion] ?? cake.occasion : '';
+    const meta = [cake.flavor, cake.notes].filter(Boolean).join(' · ');
+    return (
+      <li class="gallery__item">
+        {img && (
+          <Image
+            class="gallery__photo"
+            src={img}
+            alt={cake.alt}
+            widths={[320, 480, 640]}
+            sizes="(max-width: 640px) 45vw, 15rem"
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+        {occasion && <p class="gallery__occasion">{occasion}</p>}
+        {meta && <p class="gallery__meta">{meta}</p>}
+      </li>
+    );
+  })}
+</ul>

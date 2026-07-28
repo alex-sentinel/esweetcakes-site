@@ -1,0 +1,48 @@
+---
+import { getLang, ui, localizePath } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang];
+const home = lang === 'es' ? '/es/' : '/';
+const galleryHref = lang === 'es' ? '/es/gallery' : '/gallery';
+const anchor = (id: string) => `${home}#${id}`;
+
+const links = [
+  { href: galleryHref, label: t.nav.gallery },
+  { href: anchor('flavors'), label: t.nav.flavors },
+  { href: anchor('sizes'), label: t.nav.sizes },
+  { href: anchor('order'), label: t.nav.order },
+  { href: anchor('about'), label: t.nav.about },
+];
+
+const path = Astro.url.pathname;
+const enPath = localizePath(path, 'en');
+const esPath = localizePath(path, 'es');
+---
+<nav class="nav" aria-label="Primary">
+  <div class="wrap nav__inner">
+    <a class="nav__mark" href={home}>E's Sweet Cakes</a>
+    <div class="nav__right">
+      <ul class="nav__links">
+        {links.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+      <div class="langswitch" role="group" aria-label={t.lang.switchLabel}>
+        <a href={enPath} data-setlang="en" class:list={['langswitch__opt', { 'is-active': lang === 'en' }]}
+          aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+        <span class="langswitch__sep" aria-hidden="true">|</span>
+        <a href={esPath} data-setlang="es" class:list={['langswitch__opt', { 'is-active': lang === 'es' }]}
+          aria-current={lang === 'es' ? 'true' : undefined}>ES</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Remember the language when the visitor uses the EN|ES switch.
+  document.querySelectorAll<HTMLAnchorElement>('[data-setlang]').forEach((a) => {
+    a.addEventListener('click', () => {
+      try { localStorage.setItem('esc-lang', a.dataset.setlang || 'en'); } catch {}
+    });
+  });
+</script>

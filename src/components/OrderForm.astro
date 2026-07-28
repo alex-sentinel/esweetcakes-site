@@ -1,0 +1,247 @@
+---
+import pricing from '../data/pricing.json';
+import { getLang, ui } from '../i18n/ui';
+
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].form;
+const en = ui.en.form; // canonical English values sent to the webhook
+
+// Option pairs: value is always English (stable for the backend), label is localized.
+const eventTypes = t.eventTypes.map((label, i) => ({ value: en.eventTypes[i], label }));
+const budgets = t.budgets.map((label, i) => ({ value: en.budgets[i], label }));
+const cakeFlavors = ui[lang].flavors.cake.map((label, i) => ({ value: ui.en.flavors.cake[i], label }));
+const fillings = ui[lang].flavors.filling.map((label, i) => ({ value: ui.en.flavors.filling[i], label }));
+const frostings = ui[lang].flavors.frosting.map((label, i) => ({ value: ui.en.flavors.frosting[i], label }));
+const sizeLabels = ui[lang].pricing.sizes;
+const sizes = pricing.sizes.map((s) => ({ value: s.size, label: sizeLabels[s.size] ?? s.size }));
+
+// TODO: swap this for the real business email once it exists — it's the
+// fallback address shown when a submission can't reach the webhook.
+const fallbackEmail = 'esperanzaperez1975@gmail.com';
+const webhookUrl = import.meta.env.PUBLIC_ORDER_WEBHOOK_URL;
+---
+<section class="section order" id="order" aria-labelledby="order-title">
+  <div class="wrap">
+    <h2 class="section__title" id="order-title">{t.title}</h2>
+    <p class="section__lede">{t.lede}</p>
+
+    <div id="order-panel" class="order__card">
+      <form id="order-form" novalidate>
+        <div class="form__grid">
+          <div class="field">
+            <label for="name">{t.labels.name} <span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="err-name" />
+            <span class="field__error" id="err-name" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="email">{t.labels.email} <span class="req" aria-hidden="true">*</span></label>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="err-email" />
+            <span class="field__error" id="err-email" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="phone">{t.labels.phone} <span class="req" aria-hidden="true">*</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="err-phone" />
+            <span class="field__error" id="err-phone" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="eventDate">{t.labels.eventDate} <span class="req" aria-hidden="true">*</span></label>
+            <input id="eventDate" name="eventDate" type="date" required aria-describedby="err-eventDate" />
+            <span class="field__error" id="err-eventDate" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="eventType">{t.labels.eventType} <span class="req" aria-hidden="true">*</span></label>
+            <select id="eventType" name="eventType" required aria-describedby="err-eventType">
+              <option value="" disabled selected>{t.choose}</option>
+              {eventTypes.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-eventType" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="size">{t.labels.size} <span class="req" aria-hidden="true">*</span></label>
+            <select id="size" name="size" required aria-describedby="err-size">
+              <option value="" disabled selected>{t.choose}</option>
+              {sizes.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-size" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="flavor">{t.labels.flavor} <span class="req" aria-hidden="true">*</span></label>
+            <select id="flavor" name="flavor" required aria-describedby="err-flavor">
+              <option value="" disabled selected>{t.choose}</option>
+              {cakeFlavors.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-flavor" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="filling">{t.labels.filling} <span class="req" aria-hidden="true">*</span></label>
+            <select id="filling" name="filling" required aria-describedby="err-filling">
+              <option value="" disabled selected>{t.choose}</option>
+              {fillings.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-filling" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="frosting">{t.labels.frosting} <span class="req" aria-hidden="true">*</span></label>
+            <select id="frosting" name="frosting" required aria-describedby="err-frosting">
+              {frostings.map((o) => <option value={o.value} selected={o.value === 'Chantilly'}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-frosting" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <label for="budget">{t.labels.budget} <span class="req" aria-hidden="true">*</span></label>
+            <select id="budget" name="budget" required aria-describedby="err-budget">
+              <option value="" disabled selected>{t.choose}</option>
+              {budgets.map((o) => <option value={o.value}>{o.label}</option>)}
+            </select>
+            <span class="field__error" id="err-budget" role="alert"></span>
+          </div>
+
+          <div class="field field--full">
+            <label for="description">{t.labels.description} <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="description" name="description" required placeholder={t.placeholderDesc} aria-describedby="err-description"></textarea>
+            <span class="field__error" id="err-description" role="alert"></span>
+          </div>
+        </div>
+
+        <div class="form__actions">
+          <button class="btn" type="submit" id="submit-btn">{t.submit}</button>
+          <span class="form__reassure">{t.reassure}</span>
+        </div>
+      </form>
+
+      <div id="form-status"></div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ S: t.js, fallbackEmail, webhookUrl }}>
+  const form = document.getElementById('order-form');
+  const panel = document.getElementById('order-panel');
+  const statusBox = document.getElementById('form-status');
+  const submitBtn = document.getElementById('submit-btn');
+  const dateInput = document.getElementById('eventDate');
+  const defaultLabel = submitBtn ? submitBtn.textContent : '';
+
+  if (form && panel && statusBox && submitBtn && dateInput) {
+    // Constrain the date picker to at least one week out.
+    const min = new Date();
+    min.setHours(0, 0, 0, 0);
+    min.setDate(min.getDate() + 7);
+    const minStr = min.toISOString().slice(0, 10);
+    dateInput.min = minStr;
+
+    let submitting = false;
+    const fields = ['name', 'email', 'phone', 'eventDate', 'eventType', 'size', 'flavor', 'filling', 'frosting', 'budget', 'description'];
+
+    const setError = (name, message) => {
+      const input = form.elements.namedItem(name);
+      const field = input ? input.closest('.field') : null;
+      const errEl = document.getElementById('err-' + name);
+      if (errEl) errEl.textContent = message;
+      if (field) field.setAttribute('data-invalid', message ? 'true' : 'false');
+      if (input) input.setAttribute('aria-invalid', message ? 'true' : 'false');
+    };
+    const clearErrors = () => fields.forEach((n) => setError(n, ''));
+    const value = (name) => (form.elements.namedItem(name)?.value ?? '').trim();
+
+    const validate = () => {
+      const errs = [];
+      if (!value('name')) errs.push(['name', S.errors.name]);
+      const email = value('email');
+      if (!email) errs.push(['email', S.errors.emailEmpty]);
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.push(['email', S.errors.emailInvalid]);
+      const digits = value('phone').replace(/\D/g, '');
+      if (!digits) errs.push(['phone', S.errors.phoneEmpty]);
+      else if (digits.length < 10) errs.push(['phone', S.errors.phoneShort]);
+      const date = value('eventDate');
+      if (!date) errs.push(['eventDate', S.errors.dateEmpty]);
+      else if (date < minStr) errs.push(['eventDate', S.errors.dateSoon]);
+      if (!value('eventType')) errs.push(['eventType', S.errors.eventType]);
+      if (!value('size')) errs.push(['size', S.errors.size]);
+      if (!value('flavor')) errs.push(['flavor', S.errors.flavor]);
+      if (!value('filling')) errs.push(['filling', S.errors.filling]);
+      if (!value('frosting')) errs.push(['frosting', S.errors.frosting]);
+      if (!value('budget')) errs.push(['budget', S.errors.budget]);
+      if (!value('description')) errs.push(['description', S.errors.description]);
+      return errs;
+    };
+
+    const setSubmitting = (on) => {
+      submitting = on;
+      submitBtn.disabled = on;
+      submitBtn.textContent = on ? S.sending : defaultLabel;
+    };
+
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const showFailure = (reason) => {
+      statusBox.innerHTML = '';
+      const box = document.createElement('div');
+      box.className = 'form__result result--fail';
+      box.setAttribute('role', 'alert');
+      const emailLink = `<a href="mailto:${fallbackEmail}">${fallbackEmail}</a>`;
+      const body = S.fail.tmpl.replace('{reason}', reason).replace('{email}', emailLink);
+      box.innerHTML = `<h3>${S.fail.h3}</h3><p>${body}</p>`;
+      statusBox.appendChild(box);
+    };
+
+    const showSuccess = (email) => {
+      const p1 = S.success.p1.replace('{email}', `<strong>${esc(email)}</strong>`);
+      panel.innerHTML =
+        `<div class="form__result result--ok" role="status">` +
+        `<h3>${S.success.h3}</h3><p>${p1}</p><p>${S.success.p2}</p></div>`;
+      panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitting) return;
+      clearErrors();
+      statusBox.innerHTML = '';
+      const errs = validate();
+      if (errs.length) {
+        errs.forEach(([n, m]) => setError(n, m));
+        const first = form.querySelector('[aria-invalid="true"]');
+        if (first) first.focus();
+        return;
+      }
+      if (!webhookUrl) {
+        showFailure(S.fail.notConnected);
+        return;
+      }
+      const payload = {
+        name: value('name'), email: value('email'), phone: value('phone'),
+        eventDate: value('eventDate'), eventType: value('eventType'), size: value('size'),
+        flavor: value('flavor'), filling: value('filling'), frosting: value('frosting'),
+        budget: value('budget'), description: value('description'),
+        language: document.documentElement.lang, submittedAt: new Date().toISOString(),
+      };
+      setSubmitting(true);
+      try {
+        const res = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          setSubmitting(false);
+          showFailure(S.fail.server.replace('{status}', String(res.status)));
+          return;
+        }
+        showSuccess(payload.email);
+      } catch {
+        setSubmitting(false);
+        showFailure(S.fail.dropped);
+      }
+    });
+  }
+</script>

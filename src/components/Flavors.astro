@@ -1,0 +1,27 @@
+---
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].flavors;
+const groups = [
+  { head: t.cakeHead, items: t.cake },
+  { head: t.fillingHead, items: t.filling },
+  { head: t.frostingHead, items: t.frosting },
+];
+---
+<section class="section wrap" id="flavors" aria-labelledby="flavors-title">
+  <h2 class="section__title" id="flavors-title">{t.title}</h2>
+  <p class="section__lede">{t.lede}</p>
+
+  <div class="flavors__cols">
+    {groups.map((g) => (
+      <div>
+        <h3 class="flavors__head">{g.head}</h3>
+        <ul class="flavors__list" role="list">
+          {g.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <p class="flavors__note">{t.frostingNote}</p>
+</section>

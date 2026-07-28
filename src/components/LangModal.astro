@@ -1,0 +1,49 @@
+---
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].lang;
+---
+<div class="langmodal" id="langmodal" hidden>
+  <div class="langmodal__box" role="dialog" aria-modal="true" aria-labelledby="langmodal-title">
+    <p class="langmodal__title" id="langmodal-title">
+      {ui.en.lang.modalTitle} <span aria-hidden="true">·</span> {ui.es.lang.modalTitle}
+    </p>
+    <div class="langmodal__actions">
+      <button type="button" class="langmodal__btn" data-lang="en">{t.english}</button>
+      <button type="button" class="langmodal__btn" data-lang="es">{t.spanish}</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const KEY = 'esc-lang';
+  const modal = document.getElementById('langmodal');
+  const current = document.documentElement.lang === 'es' ? 'es' : 'en';
+
+  const localize = (path: string, target: string) => {
+    let base = path.replace(/^\/es(\/|$)/, '/');
+    if (base === '') base = '/';
+    return target === 'es' ? (base === '/' ? '/es/' : '/es' + base) : base;
+  };
+
+  const choose = (lang: string) => {
+    try { localStorage.setItem(KEY, lang); } catch {}
+    if (lang !== current) {
+      location.href = localize(location.pathname, lang) + location.hash;
+    } else if (modal) {
+      modal.hidden = true;
+    }
+  };
+
+  let stored: string | null = null;
+  try { stored = localStorage.getItem(KEY); } catch {}
+
+  // First-time visitor with no saved preference: ask. (Returning visitors are
+  // redirected before paint by the inline script in <head>.)
+  if (!stored && modal) {
+    modal.hidden = false;
+    modal.querySelectorAll<HTMLButtonElement>('[data-lang]').forEach((btn) => {
+      btn.addEventListener('click', () => choose(btn.dataset.lang || 'en'));
+    });
+  }
+</script>

@@ -1,0 +1,11 @@
+---
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].about;
+// TODO: confirm "four years" is right at launch, and that Esperanza is happy
+// with how she's described here.
+---
+<section class="section wrap" id="about" aria-labelledby="about-title">
+  <h2 class="section__title" id="about-title">{t.title}</h2>
+  <p class="about__body">{t.body}</p>
+</section>

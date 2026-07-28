@@ -1,0 +1,11 @@
+# build output
+dist/
+# dependencies
+node_modules/
+# astro
+.astro/
+# env — never commit real webhook URLs
+.env
+.env.production
+# os
+.DS_Store

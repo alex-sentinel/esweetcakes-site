@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import GalleryGrid from '../../components/GalleryGrid.astro';
+import cakes from '../../data/cakes.json';
+import { getLang, ui } from '../../i18n/ui';
+
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].galleryPage;
+const home = lang === 'es' ? '/es/' : '/';
+const orderHref = lang === 'es' ? '/es/#order' : '/#order';
+---
+<Base page="gallery">
+  <Nav />
+  <main id="main">
+    <section class="section wrap" id="top">
+      <a class="backlink" href={home}><span aria-hidden="true">&larr;</span> {t.back}</a>
+      <h1 class="section__title gallery-page__title">{t.title}</h1>
+      <p class="section__lede">{t.lede}</p>
+
+      <GalleryGrid cakes={cakes} />
+
+      <p class="gallery-page__cta">{t.ctaPre} <a href={orderHref}>{t.ctaLink}</a>.</p>
+    </section>
+  </main>
+  <Footer />
+</Base>

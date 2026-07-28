@@ -1,0 +1,34 @@
+---
+import pricing from '../data/pricing.json';
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].pricing;
+// TODO: fill in the two sheet-cake prices in src/data/pricing.json (they are
+// marked "TODO"). Also confirm the servings-per-size numbers are right — those
+// were estimated, not given.
+---
+<section class="section wrap" id="sizes" aria-labelledby="sizes-title">
+  <h2 class="section__title" id="sizes-title">{t.title}</h2>
+
+  <table class="pricing__table">
+    <caption>{t.caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{t.size}</th>
+        <th scope="col">{t.servings}</th>
+        <th scope="col" class="price">{t.basePrice}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {pricing.sizes.map((row) => (
+        <tr>
+          <th scope="row" style="font-weight:400">{t.sizes[row.size] ?? row.size}</th>
+          <td class="num">{row.servings}</td>
+          <td class="price">{row.price === 'TODO' ? t.ask : row.price}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="pricing__custom">{t.customNote}</p>
+  <p class="pricing__custom pricing__delivery">{t.deliveryNote}</p>
+</section>

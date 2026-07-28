@@ -1,0 +1,46 @@
+---
+// Self-hosted variable fonts (bundled into the build — no external requests).
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/hanken-grotesk';
+import '../styles/global.css';
+import { getLang, ui } from '../i18n/ui';
+import LangModal from '../components/LangModal.astro';
+
+interface Props {
+  page: 'home' | 'gallery';
+}
+const { page } = Astro.props;
+const lang = getLang(Astro.currentLocale);
+const meta = ui[lang].meta[page];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={meta.description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{meta.title}</title>
+    {/* Redirect returning visitors to their saved language before the page paints. */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('esc-lang');
+          var cur = document.documentElement.lang;
+          if (stored && stored !== cur) {
+            var p = location.pathname.replace(/^\/es(\/|$)/, '/');
+            if (p === '') p = '/';
+            var dest = stored === 'es' ? (p === '/' ? '/es/' : '/es' + p) : p;
+            location.replace(dest + location.hash);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui[lang].skip}</a>
+    <slot />
+    <LangModal />
+  </body>
+</html>

@@ -1,0 +1,15 @@
+---
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].hero;
+const orderHref = lang === 'es' ? '/es/#order' : '/#order';
+---
+<header class="hero wrap" id="top">
+  <h1 class="hero__title">{t.title}</h1>
+  <div class="hero__rule" aria-hidden="true"></div>
+  <p class="hero__sub">{t.sub}</p>
+  <div class="hero__cta-row">
+    <a class="btn" href={orderHref}>{t.cta}</a>
+    <span class="hero__note">{t.note}</span>
+  </div>
+</header>

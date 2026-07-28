@@ -1,0 +1,21 @@
+---
+import { getLang, ui } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const t = ui[lang].footer;
+// TODO: replace with the real business email once one exists (currently the
+// personal address). Phone and service area are confirmed.
+const email = 'esperanzaperez1975@gmail.com';
+const phone = '507-581-4837';
+---
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div>
+      <a href={`mailto:${email}`}>{email}</a><br />
+      <a href={`tel:+1${phone.replace(/\D/g, '')}`}>{phone}</a>
+    </div>
+    <div>
+      {t.line1}<br />
+      {t.line2}
+    </div>
+  </div>
+</footer>
