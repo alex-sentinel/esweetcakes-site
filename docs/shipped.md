@@ -11,11 +11,11 @@ Turns out Brave doesn't tell you it blocks the popup, it lets the sign in silent
 wondering if your login's broken. When I went to check, I found the google sign in right away. Lesson: check 
 for a blocked popup before you start assuming your credentials are wrong.
 
-Another obstacle I ran into was when I almost sent a confirmation email to a total stranger. I was testing 
-an auto reply node and previewed the "To" field before running it. I seen that it wasn't my test email at all. 
-I saw that the node was pulling from Google Sheets instead of straight from the webhook, and Sheets had a bunch 
-of old test rows sitting in it from earlier runs. It grabbed one of those instead of my actual submission. I 
-already like to check outputs before hitting execute, here I caught that there would've been a real person getting 
+Another obstacle I ran into was when I almost sent a confirmation email to a random person. When I was testing 
+an auto reply node, I looked back at the "To" field before running it. I saw that it wasn't my test email at all. 
+I guess the node was grabbing data from Google Sheets instead of from the webhook I set up, and Sheets had a lot 
+of test rows sitting in it from earlier runs. It grabbed one of those instead of what I submitted. I 
+already like to check the outputs before hitting execute, and here I caught that there would've been a real person getting 
 a random "thanks for your order" email.
 
 Now that I have a live site running for my mother, I am going to add a working automation on top of it that gets 
