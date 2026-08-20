@@ -18,7 +18,13 @@ const sizes = pricing.sizes.map((s) => ({ value: s.size, label: sizeLabels[s.siz
 // TODO: swap this for the real business email once it exists — it's the
 // fallback address shown when a submission can't reach the webhook.
 const fallbackEmail = 'esperanzaperez1975@gmail.com';
-const webhookUrl = import.meta.env.PUBLIC_WEBHOOK_URL;
+// Prefer the env var (set in .env locally, or in Cloudflare Pages settings).
+// Fall back to the production webhook so the live build is never left without an
+// endpoint. This URL is a PUBLIC_ value that already ships in the browser bundle,
+// so it is not a secret.
+const webhookUrl =
+  import.meta.env.PUBLIC_WEBHOOK_URL ??
+  'https://n8n.esweetcakesbaking.com/webhook/df03921b-13ba-4ea4-a1c6-955312203646';
 ---
 <section class="section order" id="order" aria-labelledby="order-title">
   <div class="wrap">
