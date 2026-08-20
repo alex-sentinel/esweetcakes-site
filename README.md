@@ -28,7 +28,7 @@ npm run preview          # serve the built ./dist locally
 Copy `.env.example` to `.env` and set the n8n webhook URL:
 
 ```
-PUBLIC_ORDER_WEBHOOK_URL=https://your-n8n-host/webhook/...
+PUBLIC_WEBHOOK_URL=https://your-n8n-host/webhook/...
 ```
 
 The form POSTs the request as JSON to that URL. Until it's set, submitting shows a

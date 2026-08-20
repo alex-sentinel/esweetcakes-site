@@ -18,7 +18,7 @@ const sizes = pricing.sizes.map((s) => ({ value: s.size, label: sizeLabels[s.siz
 // TODO: swap this for the real business email once it exists — it's the
 // fallback address shown when a submission can't reach the webhook.
 const fallbackEmail = 'esperanzaperez1975@gmail.com';
-const webhookUrl = import.meta.env.PUBLIC_ORDER_WEBHOOK_URL;
+const webhookUrl = import.meta.env.PUBLIC_WEBHOOK_URL;
 ---
 <section class="section order" id="order" aria-labelledby="order-title">
   <div class="wrap">
